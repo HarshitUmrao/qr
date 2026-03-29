@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eForm-C | UP Minerals</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #e8e8e8;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      background: #fff;
+      border: 2px solid #b00000;
+      border-radius: 4px;
+      max-width: 680px;
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      border-bottom: 1px solid #555;
+      padding-bottom: 8px;
+      margin-bottom: 6px;
+    }
+    .header h1 {
+      font-size: 15px;
+      font-weight: bold;
+      color: #000;
+      text-transform: uppercase;
+    }
+    .header p {
+      font-size: 11px;
+      color: #222;
+      margin-top: 2px;
+    }
+    .eform-center {
+      font-size: 13px;
+      font-weight: bold;
+      color: #000;
+      text-align: center;
+      margin: 6px 0 4px;
+    }
+
+    /* Banners */
+    .banner {
+      background: #990000;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 4px 8px;
+      text-transform: uppercase;
+      margin: 6px 0;
+      letter-spacing: 0.4px;
+    }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    td {
+      border: 1px solid #aaa;
+      padding: 5px 7px;
+      vertical-align: top;
+      font-size: 12px;
+      color: #111;
+    }
+    td.lbl {
+      background: #f5f5f5;
+      color: #444;
+      font-weight: normal;
+      width: 28%;
+    }
+    td.val { font-weight: bold; background: #fff; }
+
+    /* Footer */
+    .footer {
+      border: 2px solid #000;
+      text-align: center;
+      padding: 8px 12px;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .wrapper { border: 1px solid #999; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <div class="header">
+      <h1>Directorate Of Geology &amp; Mining Uttar Pradesh</h1>
+      <p>The Uttar Pradesh Minerals (Prevention of Illegal Mining, Transportation and Storage) Rules, 2018</p>
+      <p>eForm-c Pass For Transportation of Minor Mineral See Rule-7(III)</p>
+    </div>
+
+    <div class="eform-center">eForm-C</div>
+    <div class="banner">Valid for one trip only &amp; See Rule-5(2)</div>
+
+    <table id="mainTable">
+      <tr>
+        <td class="lbl">1. eForm-C No.</td>
+        <td class="val" id="t_eformno" colspan="3">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">2. Licensee Id:</td>
+        <td class="val" id="t_licid" colspan="3">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">3. Name of Licensee:</td>
+        <td class="val" id="t_licname">-</td>
+        <td class="lbl">4. Mobile Number Of Licensee:</td>
+        <td class="val" id="t_licmob">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">5. Destination District:</td>
+        <td class="val" id="t_destdist">-</td>
+        <td class="lbl">6. Licensee Details [Address, Village, (Gata/Khand), Area]:</td>
+        <td class="val" id="t_licaddr">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">7. Tehsil Of License:</td>
+        <td class="val" id="t_tehsil">-</td>
+        <td class="lbl">8. District Of License:</td>
+        <td class="val" id="t_district">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">9. Quantity Transported:</td>
+        <td class="val" id="t_qty">-</td>
+        <td class="lbl">10. Name Of Mineral:</td>
+        <td class="val" id="t_mineral">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">11. Loading From:</td>
+        <td class="val" id="t_loading">-</td>
+        <td class="lbl">12. Destination (Delivery Address):</td>
+        <td class="val" id="t_delivery">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">13. Distance(Approx):</td>
+        <td class="val" id="t_dist">-</td>
+        <td class="lbl">14. Traveling Duration:</td>
+        <td class="val" id="t_duration">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">15. eForm-C Generated On:</td>
+        <td class="val" id="t_genon">-</td>
+        <td class="lbl">16. eForm-C Valid Upto:</td>
+        <td class="val" id="t_validupto">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">17. Selling Price(Rs per tonne):</td>
+        <td class="val" id="t_price">-</td>
+        <td class="lbl">18. Serial Number:</td>
+        <td class="val" id="t_serial">-</td>
+      </tr>
+    </table>
+
+    <div class="banner" style="margin-top:10px;">Details Of Registered Vehicle</div>
+
+    <table>
+      <tr>
+        <td class="lbl">1. Registration Number:</td>
+        <td class="val" id="t_vehno">-</td>
+        <td class="lbl">2. Name Of Driver:</td>
+        <td class="val" id="t_driver">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">3. Gross Vehicle Weight in Tonne:</td>
+        <td class="val" id="t_gross">-</td>
+        <td class="lbl">4. Carrying capacity of vehicle in Tonne:</td>
+        <td class="val" id="t_carry">-</td>
+      </tr>
+      <tr>
+        <td class="lbl">5. Mobile Number Of Driver:</td>
+        <td class="val" id="t_drivmob" colspan="3">-</td>
+      </tr>
+    </table>
+
+    <div class="footer" id="footerText">
+      This eForm-c is valid up to -
+    </div>
+
+  </div>
+
+  <script>
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name) || '-';
+    }
+
+    function fill(id, key) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = getParam(key);
+    }
+
+    fill('t_eformno', 'eformno');
+    fill('t_licid',   'licid');
+    fill('t_licname', 'licname');
+    fill('t_licmob',  'licmob');
+    fill('t_destdist','destdist');
+    fill('t_licaddr', 'licaddr');
+    fill('t_tehsil',  'tehsil');
+    fill('t_district','district');
+    fill('t_qty',     'qty');
+    fill('t_mineral', 'mineral');
+    fill('t_loading', 'loading');
+    fill('t_delivery','delivery');
+    fill('t_dist',    'dist');
+    fill('t_duration','duration');
+    fill('t_genon',   'genon');
+    fill('t_validupto','validupto');
+    fill('t_price',   'price');
+    fill('t_serial',  'serial');
+    fill('t_vehno',   'vehno');
+    fill('t_driver',  'driver');
+    fill('t_gross',   'gross');
+    fill('t_carry',   'carry');
+    fill('t_drivmob', 'drivmob');
+
+    // Footer
+    const validUpto = new URLSearchParams(window.location.search).get('validupto') || '-';
+    document.getElementById('footerText').textContent =
+      'This eForm-c is valid up to ' + validUpto;
+  </script>
+</body>
+</html>

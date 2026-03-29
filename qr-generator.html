@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eForm-C QR Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    .header-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(192,57,43,0.5);
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #fff, #ccc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 28px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 16px;
+    }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+    input:focus {
+      border-color: rgba(231,76,60,0.7);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 8px 24px rgba(192,57,43,0.4);
+    }
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(192,57,43,0.55);
+    }
+    .btn-generate:active { transform: translateY(0); }
+
+    /* QR Result */
+    .qr-result {
+      display: none;
+      margin-top: 28px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .qr-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      display: inline-block;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      margin-bottom: 16px;
+    }
+
+    .qr-box canvas { display: block; }
+
+    .qr-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 12px;
+    }
+    .qr-label strong { color: #fff; }
+
+    .btn-download {
+      display: inline-block;
+      padding: 10px 24px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .btn-download:hover {
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-1px);
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 20px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(231,76,60,0.25);
+      color: #e74c3c;
+      border: 1px solid rgba(231,76,60,0.35);
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .open-link {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+    }
+    .open-link:hover { color: rgba(255,255,255,0.85); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-icon">📄</div>
+    <h1>eForm-C QR Generator</h1>
+    <p class="subtitle">Directorate of Geology &amp; Mining, Uttar Pradesh</p>
+    <div class="badge">🔒 UP Minerals Rules, 2018 — Rule-7(III)</div>
+
+    <div class="divider"></div>
+
+    <!-- Form fields -->
+    <div class="grid-2">
+      <div>
+        <label>eForm-C No.</label>
+        <input id="f_eformno" type="text" value="31792104990XXXXXXX" />
+      </div>
+      <div>
+        <label>Licensee ID</label>
+        <input id="f_licid" type="text" value="31792104990YYY" />
+      </div>
+    </div>
+
+    <label>Name of Licensee</label>
+    <input id="f_licname" type="text" value="MS RAJESH STONE CRUSHER PVT LTD" />
+
+    <div class="grid-2">
+      <div>
+        <label>Mobile (Licensee)</label>
+        <input id="f_licmob" type="text" value="9876543210" />
+      </div>
+      <div>
+        <label>Destination District</label>
+        <input id="f_destdist" type="text" value="LUCKNOW" />
+      </div>
+    </div>
+
+    <label>Licensee Address</label>
+    <input id="f_licaddr" type="text" value="HAZRATGANJ MAIN ROAD, LUCKNOW SADAR DISTRICT LUCKNOW, KABRAI, 305ML 2.43" />
+
+    <div class="grid-2">
+      <div>
+        <label>Tehsil of License</label>
+        <input id="f_tehsil" type="text" value="LUCKNOW" />
+      </div>
+      <div>
+        <label>District of License</label>
+        <input id="f_district" type="text" value="LUCKNOW" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Quantity (M3)</label>
+        <input id="f_qty" type="text" value="25 M3" />
+      </div>
+      <div>
+        <label>Name of Mineral</label>
+        <input id="f_mineral" type="text" value="GRANITE AND DOLOSTONE BALLAST (GITTI)" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Loading From</label>
+        <input id="f_loading" type="text" value="LUCKNOW" />
+      </div>
+      <div>
+        <label>Delivery Address</label>
+        <input id="f_delivery" type="text" value="SHREE RAM ENTERPRISES AGRA NAGAR" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Distance (Approx)</label>
+        <input id="f_dist" type="text" value="200 K.M." />
+      </div>
+      <div>
+        <label>Traveling Duration</label>
+        <input id="f_duration" type="text" value="12 Hr (Approx)" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Generated On</label>
+        <input id="f_genon" type="text" value="07-03-2026 08:00:00 AM" />
+      </div>
+      <div>
+        <label>Valid Upto</label>
+        <input id="f_validupto" type="text" value="07-03-2026 08:00:45 PM" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Selling Price (Rs/tonne)</label>
+        <input id="f_price" type="text" value="350" />
+      </div>
+      <div>
+        <label>Serial Number</label>
+        <input id="f_serial" type="text" value="AATGG002999" />
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="grid-2">
+      <div>
+        <label>Vehicle Reg. No.</label>
+        <input id="f_vehno" type="text" value="UP32AB1234" />
+      </div>
+      <div>
+        <label>Driver Name</label>
+        <input id="f_driver" type="text" value="RAMESH" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <label>Gross Weight (Tonne)</label>
+        <input id="f_gross" type="text" value="15" />
+      </div>
+      <div>
+        <label>Carrying Capacity (Tonne)</label>
+        <input id="f_carry" type="text" value="10" />
+      </div>
+    </div>
+
+    <label>Driver Mobile</label>
+    <input id="f_drivmob" type="text" value="9988776655" />
+
+    <button class="btn-generate" onclick="generateQR()">⬛ Generate QR Code</button>
+
+    <!-- QR Result -->
+    <div class="qr-result" id="qrResult">
+      <p class="qr-label">Scan this QR code to open the <strong>eForm-C document</strong></p>
+      <div class="qr-box">
+        <canvas id="qrCanvas"></canvas>
+      </div>
+      <br/>
+      <a class="btn-download" id="downloadBtn" download="eform-c-qr.png">⬇ Download QR Image</a>
+      <br/>
+      <a class="open-link" id="previewLink" target="_blank">↗ Preview Document</a>
+    </div>
+  </div>
+
+  <script>
+    function val(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function generateQR() {
+      if (typeof QRCode === 'undefined') {
+        alert('QR library failed to load. Please check your internet connection and try again.');
+        return;
+      }
+      // Build query string from all fields
+      const params = new URLSearchParams({
+        eformno: val('f_eformno'),
+        licid:   val('f_licid'),
+        licname: val('f_licname'),
+        licmob:  val('f_licmob'),
+        destdist: val('f_destdist'),
+        licaddr: val('f_licaddr'),
+        tehsil:  val('f_tehsil'),
+        district: val('f_district'),
+        qty:     val('f_qty'),
+        mineral: val('f_mineral'),
+        loading: val('f_loading'),
+        delivery: val('f_delivery'),
+        dist:    val('f_dist'),
+        duration: val('f_duration'),
+        genon:   val('f_genon'),
+        validupto: val('f_validupto'),
+        price:   val('f_price'),
+        serial:  val('f_serial'),
+        vehno:   val('f_vehno'),
+        driver:  val('f_driver'),
+        gross:   val('f_gross'),
+        carry:   val('f_carry'),
+        drivmob: val('f_drivmob'),
+      });
+
+      // The URL that the QR code will point to — eform-c-view.html with all params
+      const baseUrl = window.location.href.replace('qr-generator.html', 'eform-c-view.html');
+      const fullUrl = baseUrl + '?' + params.toString();
+
+      const canvas = document.getElementById('qrCanvas');
+      QRCode.toCanvas(canvas, fullUrl, {
+        width: 240,
+        margin: 2,
+        color: { dark: '#000000', light: '#ffffff' }
+      }, function (err) {
+        if (err) { alert('Error generating QR: ' + err); return; }
+
+        // Show result
+        const result = document.getElementById('qrResult');
+        result.style.display = 'block';
+
+        // Set download link
+        const dl = document.getElementById('downloadBtn');
+        dl.href = canvas.toDataURL('image/png');
+
+        // Preview link
+        document.getElementById('previewLink').href = fullUrl;
+
+        result.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+  </script>
+</body>
+</html>
