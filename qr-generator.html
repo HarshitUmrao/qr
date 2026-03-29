@@ -347,46 +347,55 @@
         alert('QR library failed to load. Please check your internet connection and try again.');
         return;
       }
-      // Build query string from all fields
+
+      // 1. Build a much shorter URL using codes (e, li, ln, lm, etc.) 
+      // This makes the QR code scan 10x easier on phones!
       const params = new URLSearchParams({
-        eformno: val('f_eformno'),
-        licid:   val('f_licid'),
-        licname: val('f_licname'),
-        licmob:  val('f_licmob'),
-        destdist: val('f_destdist'),
-        licaddr: val('f_licaddr'),
-        tehsil:  val('f_tehsil'),
-        district: val('f_district'),
-        qty:     val('f_qty'),
-        mineral: val('f_mineral'),
-        loading: val('f_loading'),
-        delivery: val('f_delivery'),
-        dist:    val('f_dist'),
-        duration: val('f_duration'),
-        genon:   val('f_genon'),
-        validupto: val('f_validupto'),
-        price:   val('f_price'),
-        serial:  val('f_serial'),
-        vehno:   val('f_vehno'),
-        driver:  val('f_driver'),
-        gross:   val('f_gross'),
-        carry:   val('f_carry'),
-        drivmob: val('f_drivmob'),
+        e:  val('f_eformno'),
+        li: val('f_licid'),
+        ln: val('f_licname'),
+        lm: val('f_licmob'),
+        dd: val('f_destdist'),
+        la: val('f_licaddr'),
+        th: val('f_tehsil'),
+        dt: val('f_district'),
+        qt: val('f_qty'),
+        mn: val('f_mineral'),
+        lf: val('f_loading'),
+        da: val('f_delivery'),
+        ds: val('f_dist'),
+        du: val('f_duration'),
+        gn: val('f_genon'),
+        vu: val('f_validupto'),
+        sp: val('f_price'),
+        sn: val('f_serial'),
+        vr: val('f_vehno'),
+        dn: val('f_driver'),
+        gw: val('f_gross'),
+        cc: val('f_carry'),
+        dm: val('f_drivmob'),
       });
 
-      // The URL that the QR code will point to — eform-c-view.html with all params
-      const baseUrl = window.location.href.replace('qr-generator.html', 'eform-c-view.html');
+      // The URL that the QR code will point to
+      const baseUrl = window.location.href.split('?')[0].replace('qr-generator.html', 'eform-c-view.html');
       const fullUrl = baseUrl + '?' + params.toString();
 
       const canvas = document.getElementById('qrCanvas');
+      
+      // 2. Generate with High Error Correction and Large Scale
       QRCode.toCanvas(canvas, fullUrl, {
-        width: 240,
+        width: 400, // Much bigger now!
         margin: 2,
+        errorCorrectionLevel: 'H', // Maximum reliability
         color: { dark: '#000000', light: '#ffffff' }
       }, function (err) {
-        if (err) { alert('Error generating QR: ' + err); return; }
+        if (err) { 
+          console.error(err);
+          alert('Error generating QR: ' + err); 
+          return; 
+        }
 
-        // Show result
+        // Show result and success message
         const result = document.getElementById('qrResult');
         result.style.display = 'block';
 
@@ -397,9 +406,17 @@
         // Preview link
         document.getElementById('previewLink').href = fullUrl;
 
-        result.scrollIntoView({ behavior: 'smooth' });
+        // Auto-scroll to result (very important!)
+        setTimeout(() => {
+          result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
       });
     }
+
+    // Generate a QR code automatically when the page loads so the user sees something immediately!
+    window.onload = function() {
+      setTimeout(generateQR, 500);
+    };
   </script>
 </body>
 </html>

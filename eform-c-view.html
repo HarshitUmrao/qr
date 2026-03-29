@@ -198,13 +198,25 @@
   </div>
 
   <script>
-    function getParam(name) {
-      return new URLSearchParams(window.location.search).get(name) || '-';
+    // New short-code mapping for faster/better QR scanning
+    const map = {
+      eformno: 'e', licid: 'li', licname: 'ln', licmob: 'lm',
+      destdist: 'dd', licaddr: 'la', tehsil: 'th', district: 'dt',
+      qty: 'qt', mineral: 'mn', loading: 'lf', delivery: 'da',
+      dist: 'ds', duration: 'du', genon: 'gn', validupto: 'vu',
+      price: 'sp', serial: 'sn', vehno: 'vr', driver: 'dn',
+      gross: 'gw', carry: 'cc', drivmob: 'dm'
+    };
+
+    function getVal(key) {
+      const p = new URLSearchParams(window.location.search);
+      // Try mapping first, then try the direct key name
+      return p.get(map[key]) || p.get(key) || '-';
     }
 
     function fill(id, key) {
       const el = document.getElementById(id);
-      if (el) el.textContent = getParam(key);
+      if (el) el.textContent = getVal(key);
     }
 
     fill('t_eformno', 'eformno');
@@ -232,7 +244,7 @@
     fill('t_drivmob', 'drivmob');
 
     // Footer
-    const validUpto = new URLSearchParams(window.location.search).get('validupto') || '-';
+    const validUpto = getVal('validupto');
     document.getElementById('footerText').textContent =
       'This eForm-c is valid up to ' + validUpto;
   </script>
